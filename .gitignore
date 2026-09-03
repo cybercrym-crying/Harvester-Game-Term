@@ -1,0 +1,10 @@
+# Python Cache
+__pycache__/
+*.py[cod]
+
+# Type Checker & Linter
+.pyright/
+
+# Kredensial / Konfigurasi Lokal (jika ada nantinya)
+.env
+*.env
