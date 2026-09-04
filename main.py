@@ -1,4 +1,4 @@
-from world_object import Cow, Animal, Chicken
+from world_object import Cow, Animal, Chicken, show_animal
 from character import Player, createChar
 from item import ItemStack, listTools, listFoods
 from InquirerPy import inquirer, prompts
@@ -10,7 +10,10 @@ list_player_animal = [
     Cow("Linda", "Female"),
     Cow("Murima", "Male"),
     Chicken("Merim", "Female"),
+    Chicken("Rudi", "Male"),
 ]
+list_player_animal[0].isAlive = False
+list_player_animal[2].isAlive = False
 
 
 def menu():
@@ -28,8 +31,6 @@ def menu():
 if menu():
     MyPlayer = createChar()
     clear_screen()
-    list_player_animal[0].get_info()
-    list_player_animal[1].get_info()
-    list_player_animal[2].get_info()
+    show_animal(list_player_animal)
 else:
     pass

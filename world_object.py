@@ -10,6 +10,7 @@ from item import Food, listFoods, ItemStack
 from InquirerPy import inquirer
 import subprocess
 import sys
+from utility import clear_screen
 
 fake_name = Faker("en_US")
 
@@ -107,12 +108,6 @@ class Animal(WorldObject, ABC):
             f"Love: {self.status['Love Status']['Condition']}\n"
             f"Pregnant: {self.pregnant}".strip()
         )
-
-    def mate(self, candidate):
-        if self.gender != candidate.gender and (self.love() and candidate.love()):
-            self.pregnant = True
-        else:
-            pass
 
     @property
     def love(self):
@@ -246,20 +241,30 @@ class Cow(Animal):
 
     def get_info(self):
         img_rows = 12
-        self.get_info_image(
-            "assets/cow.png",
-            super().__str__(),
-            img_cols=25,
-            img_rows=img_rows,
-            x=0,
-            y=Animal._next_y,
-        )
+        if self.isAlive:
+            self.get_info_image(
+                "assets/cow.png",
+                super().__str__(),
+                img_cols=25,
+                img_rows=img_rows,
+                x=0,
+                y=Animal._next_y,
+            )
+        else:
+            self.get_info_image(
+                "assets/dead_cow.png",
+                f"YOUR COW HAS BEEN DEAD",
+                img_cols=25,
+                img_rows=img_rows,
+                x=0,
+                y=Animal._next_y,
+            )
         Animal._next_y += img_rows + 1
 
 
 class Chicken(Animal):
     def __init__(self, name, gender):
-        super().__init__(name, gender, "COW")
+        super().__init__(name, gender, "CHICKEN")
         self.accepted_consumption = {
             "grass": {"type": "food"},
             "chicken  pelltets": {"type": "food"},
@@ -273,12 +278,53 @@ class Chicken(Animal):
 
     def get_info(self):
         img_rows = 12
-        self.get_info_image(
-            "assets/chicken.png",
-            super().__str__(),
-            img_cols=25,
-            img_rows=img_rows,
-            x=0,
-            y=Animal._next_y,
-        )
+        if self.isAlive:
+            self.get_info_image(
+                "assets/chicken.png",
+                super().__str__(),
+                img_cols=25,
+                img_rows=img_rows,
+                x=0,
+                y=Animal._next_y,
+            )
+        else:
+            self.get_info_image(
+                "assets/dead_chicken.png",
+                "YOUR CHICKEN HAS BEEN DEAD",
+                img_cols=25,
+                img_rows=img_rows,
+                x=0,
+                y=Animal._next_y,
+            )
         Animal._next_y += img_rows + 2
+
+
+def show_animal(list_animal: list):
+    i = 0
+    while i < len(list_animal):
+        list_animal[i].get_info()
+        confirm = None
+        if (i + 1) % 3 == 0 or i + 1 == len(list_animal):
+            if i + 1 <= 3:
+                confirm = inquirer.select(
+                    message="Continue?",
+                    choices=["Next", "Quit"],
+                ).execute()
+            elif i + 1 > 3:
+                confirm = inquirer.select(
+                    message="Continue?",
+                    choices=["Prev", "Next", "Quit"],
+                ).execute()
+            if confirm == "Quit":
+                return
+            elif confirm == "Next":
+                clear_screen()
+                Animal._next_y = 2
+                i += 1
+                continue
+            else:
+                clear_screen()
+                Animal._next_y = 2
+                i -= 3
+                continue
+        i += 1

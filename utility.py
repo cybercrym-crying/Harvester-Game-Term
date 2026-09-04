@@ -1,9 +1,16 @@
 import os
 import re
+import shutil
 
 
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
+
+
+def check_term_size():
+    width = shutil.get_terminal_size().columns
+    high = shutil.get_terminal_size().lines
+    return width, high
 
 
 def validate_input(input):
