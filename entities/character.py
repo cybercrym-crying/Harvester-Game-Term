@@ -1,10 +1,10 @@
 from item import Tools
-from system import InventorySystem
+from systems.inventory_system import InventorySystem
 from abc import ABC, abstractmethod
 from item import Food, ItemCondition
 from datetime import date
 from InquirerPy import inquirer, prompts
-from utility import clear_screen, validate_input
+from utils.utility import clear_screen, validate_input
 
 
 class Character(ABC):

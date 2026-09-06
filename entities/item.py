@@ -2,64 +2,17 @@ from abc import ABC, abstractmethod
 from enum import Enum, auto
 from datetime import date
 from dateutil.relativedelta import relativedelta
-
-
-class ItemCondition(Enum):
-    GOOD = auto()
-    BROKEN = auto()
-    ROTTEN = auto()
-
-
-class ItemType(Enum):
-    TOOLS = auto()
-    FOOD = auto()
-    MATERIAL = auto()
-    SEED = auto()
-
-
-class MaterialType(Enum):
-    WOOD = auto()
-    IRON = auto()
-    HERB = auto()
-    STONE = auto()
-
-
-class Season(Enum):
-    SPRING = auto()
-    SUMMER = auto()
-    AUTUMN = auto()
-    WINTER = auto()
-
-
-class RarityType(Enum):
-    COMMON = 1
-    UNCOMMON = 2
-    RARE = 3
-    EPIC = 4
-    LEGEND = 5
-
-
-RARITY_DROP_CHANCE = {
-    RarityType.COMMON: 0.5,
-    RarityType.UNCOMMON: 0.3,
-    RarityType.RARE: 0.1,
-    RarityType.EPIC: 0.08,
-    RarityType.LEGEND: 0.02,
-}
-RARITY_PRICE_MULTIPLIER = {
-    RarityType.COMMON: 1,
-    RarityType.UNCOMMON: 2,
-    RarityType.RARE: 5,
-    RarityType.EPIC: 15,
-    RarityType.LEGEND: 50,
-}
-
-BASE_PRICE_ITEM = {
-    ItemType.MATERIAL: 2,
-    ItemType.TOOLS: 3,
-    ItemType.FOOD: 1,
-    ItemType.SEED: 2,
-}
+from main import clock
+from core.enums import (
+    RarityType,
+    ItemType,
+    ItemCondition,
+    MaterialType,
+    Season,
+    BASE_PRICE_ITEM,
+    RARITY_PRICE_MULTIPLIER,
+    RARITY_DROP_CHANCE,
+)
 
 
 class Item(ABC):
@@ -80,6 +33,14 @@ class Item(ABC):
             f"Condition\t: {self.__condition.name}\n"
             f"Type      \t: {self._item_type.name}\n"
         )
+
+    def get_info(self):
+        return {
+            "name": self.name,
+            "price": self.__price,
+            "condition": self.__condition,
+            "type": self._item_type,
+        }
 
 
 class ItemStack:
@@ -132,7 +93,7 @@ class Food(Item):
 
     @property
     def age_in_days(self):
-        return date.today() - self.born_date
+        return clock.get_date() - self.born_date
 
     def rotten(self):
         if self.age_in_days.days >= 5:
@@ -167,5 +128,4 @@ listFoods = [
     Food("M MILK 🥛", 30, RarityType.UNCOMMON),
     Food("S MILK 🥛", 15, RarityType.COMMON),
 ]
-print(listFoods[0])
 listMaterial = ["Diamond", "", 10, RarityType.EPIC, MaterialType.IRON]

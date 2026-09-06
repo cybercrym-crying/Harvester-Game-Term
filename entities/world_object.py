@@ -15,21 +15,6 @@ from utility import clear_screen
 fake_name = Faker("en_US")
 
 
-class AnimalStatus(Enum):
-    HUNGRY = auto()
-    NOTHUNGRY = auto()
-    SICK = auto()
-    NOTSICK = auto()
-    READY = auto()
-    NOTREADY = auto()
-
-
-class AnimalDisease(Enum):
-    FEVER = auto()
-    FLU = auto()
-    VIRUS = auto()
-
-
 class WorldObject(ABC):
     def __init__(self, name, prefix):
         self.name = name
@@ -53,7 +38,7 @@ class WorldObject(ABC):
         """
 
     @property
-    def ageInDays(self):
+    def age_in_days(self):
         return relativedelta(self.__bornDate, date.today())
 
 
@@ -64,16 +49,16 @@ class Animal(WorldObject, ABC):
     def __init__(self, name, gender, prefix):
         super().__init__(name, prefix)
         self.status = {
-            "Hungry Status": AnimalStatus.HUNGRY.name,
+            "Hungry Status": AnimalStatus.NOTHUNGRY.name,
             "Sick Status": {
-                "Condition": AnimalStatus.SICK.name,
-                "Disease": AnimalDisease.FLU.name,
+                "Condition": AnimalStatus.HEALTHY.name,
+                "Disease": AnimalDisease.NONE.name,
             },
             "Harvest Status": AnimalStatus.NOTREADY.name,
             "Love Status": {"Condition": False, "Cooldown": 0},
-            "Health": 10,  # max health 100
+            "Health": 100,  # max health 100
             "Relationship": 0,  # max Relationship 100
-            "Stress": 5,  # max stress 10
+            "Stress": 0,  # max stress 10
         }
         self.dateLastMeal = date.today()
         self.gender = gender
@@ -81,13 +66,6 @@ class Animal(WorldObject, ABC):
             self.pregnant = False
         else:
             self.pregnant = "N\\A"
-
-    def petting(self):
-        print("Petting animall....")
-        if self.status["Stress"] >= 1:
-            self.status["Stress"] -= 1
-        if self.status["Relationship"] <= 100:
-            self.status["Relationship"] += 1
 
     def __str__(self):
         pregnant_info = (
@@ -116,8 +94,8 @@ class Animal(WorldObject, ABC):
     @love.setter
     def love(self):
         if (
-            self.ageInDays.days >= 365
-            and self.status["Sick Status"]["Condition"] == AnimalStatus.NOTSICK.name
+            self.age_in_days.days >= 365
+            and self.status["Sick Status"]["Condition"] == AnimalStatus.HEALTHY.name
             and self.status["Hungry Status"] == AnimalStatus.NOTHUNGRY.name
             and self.status["Stress"] <= 5
         ):
@@ -157,7 +135,7 @@ class Animal(WorldObject, ABC):
         return self.status["Sick Status"]
 
     @sick.setter
-    def sick(self):
+    def get_sick(self):
         if (
             self.status["Hungry Status"] == AnimalStatus.HUNGRY.name
         ):  # Probability animal get sick increase if the animal hungry
@@ -169,24 +147,24 @@ class Animal(WorldObject, ABC):
             self.status["Sick Status"]["Disease"] = random.choice(list(AnimalDisease))
 
     @abstractmethod
-    def checkAcceptedConsumption(self, consumption) -> bool:
+    def check_accepted_consumption(self, consumption) -> bool:
         pass
 
-    def cureSick(self, consumption):
+    def cure_sick(self, consumption):
         if self.status["Sick Status"]["Condition"] == AnimalStatus.SICK.name:
             if (
-                self.checkAcceptedConsumption(consumption)
+                self.check_accepted_consumption(consumption)
                 and f"{self.status['Sick Status']['Disease'].lower()}"
                 in consumption.lower()
             ):
-                self.status["Sick Status"]["Condition"] = AnimalStatus.NOTSICK.name
+                self.status["Sick Status"]["Condition"] = AnimalStatus.HEALTHY.name
                 self.status["Sick Status"]["Disease"] = None
         else:
             pass
 
-    def feeding(self, consumption):
+    def eating(self, consumption):
         if self.status["Hungry Status"] == AnimalStatus.HUNGRY.name:
-            if self.checkAcceptedConsumption(consumption):
+            if self.check_accepted_consumption(consumption):
                 self.status["Hungry Status"] = AnimalStatus.NOTHUNGRY.name
                 self.dateLastMeal = date.today()
             else:
@@ -194,7 +172,7 @@ class Animal(WorldObject, ABC):
         else:
             pass
 
-    def increseStress(self):
+    def incress_stress(self):
         if (
             self.status["Harvest Status"] == AnimalStatus.READY.name
             or self.status["Hungry Status"] == AnimalStatus.HUNGRY.name
@@ -236,7 +214,7 @@ class Cow(Animal):
             "cow virus medicine": {"type": "medicine"},
         }
 
-    def checkAcceptedConsumption(self, consumption) -> bool:
+    def check_accepted_consumption(self, consumption) -> bool:
         return consumption in self.accepted_consumption.keys()
 
     def get_info(self):
@@ -273,7 +251,7 @@ class Chicken(Animal):
             "chicken virus medicine": {"type": "medicine"},
         }
 
-    def checkAcceptedConsumption(self, consumption) -> bool:
+    def check_accepted_consumption(self, consumption) -> bool:
         return consumption in self.accepted_consumption.keys()
 
     def get_info(self):

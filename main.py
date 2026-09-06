@@ -1,8 +1,9 @@
-from world_object import Cow, Animal, Chicken, show_animal
-from character import Player, createChar
-from item import ItemStack, listFoods
+from entities.world_object import Cow, Animal, Chicken, show_animal
+from entities.character import Player, createChar
+from entities.item import ItemStack, listFoods
 from InquirerPy import inquirer, prompts
-from utility import clear_screen
+from utils.utility import clear_screen
+from systems.time_system import TimeSystem
 import climage
 import subprocess
 
@@ -14,6 +15,10 @@ list_player_animal = [
 ]
 list_player_animal[0].isAlive = False
 list_player_animal[2].isAlive = False
+
+
+def make_start(player: Player):
+    print("Hello {player.name}")
 
 
 def menu():
@@ -28,6 +33,8 @@ def menu():
         exit(0)
 
 
+clock = TimeSystem()
+print(clock.get_date())
 if menu():
     MyPlayer = createChar()
     clear_screen()

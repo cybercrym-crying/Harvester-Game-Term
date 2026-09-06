@@ -1,20 +1,3 @@
-from datetime import date, timedelta
-from world_object import Animal, Cow
-from item import Food, ItemStack, Item, ItemType
-from rich.console import Console
-from rich.table import Table
-from InquirerPy import inquirer, prompts
-import copy
-
-
-class TimeSystem:
-    def __init__(self):
-        self.date_start = date.today()
-
-    def next_day(self):
-        pass
-
-
 class InventorySystem:
     def __init__(self):
         self.slot = 10
@@ -55,11 +38,10 @@ class InventorySystem:
             else:
                 try:
                     empty_slot = self.inventory_item.index(None)
-                    self.inventory_item[empty_slot] = copy.deepcopy(new_item)
-                    self.inventory_item[empty_slot].quantity = 0
-                    new_item.quantity = self.inventory_item[empty_slot].add_quantity(
-                        new_item.quantity
-                    )
+                    new_slot = copy.deepcopy(new_item)
+                    self.inventory_item[empty_slot] = new_slot
+                    new_slot.quantity = 0
+                    new_item.quantity = new_slot.add_quantity(new_item.quantity)
                 except ValueError:
                     print("Your Bag Is Full")
                     return
