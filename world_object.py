@@ -245,7 +245,7 @@ class Cow(Animal):
             self.get_info_image(
                 "assets/cow.png",
                 super().__str__(),
-                img_cols=25,
+                img_cols=20,
                 img_rows=img_rows,
                 x=0,
                 y=Animal._next_y,
@@ -254,7 +254,7 @@ class Cow(Animal):
             self.get_info_image(
                 "assets/dead_cow.png",
                 f"YOUR COW HAS BEEN DEAD",
-                img_cols=25,
+                img_cols=20,
                 img_rows=img_rows,
                 x=0,
                 y=Animal._next_y,
@@ -282,7 +282,7 @@ class Chicken(Animal):
             self.get_info_image(
                 "assets/chicken.png",
                 super().__str__(),
-                img_cols=25,
+                img_cols=20,
                 img_rows=img_rows,
                 x=0,
                 y=Animal._next_y,
@@ -291,7 +291,7 @@ class Chicken(Animal):
             self.get_info_image(
                 "assets/dead_chicken.png",
                 "YOUR CHICKEN HAS BEEN DEAD",
-                img_cols=25,
+                img_cols=20,
                 img_rows=img_rows,
                 x=0,
                 y=Animal._next_y,

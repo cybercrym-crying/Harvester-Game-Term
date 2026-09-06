@@ -1,6 +1,6 @@
 from world_object import Cow, Animal, Chicken, show_animal
 from character import Player, createChar
-from item import ItemStack, listTools, listFoods
+from item import ItemStack, listFoods
 from InquirerPy import inquirer, prompts
 from utility import clear_screen
 import climage

@@ -31,29 +31,55 @@ class Season(Enum):
     WINTER = auto()
 
 
-class Item(ABC):
-    def __init__(
-        self,
-        name: str,
-        description: str,
-        price: int,
-        item_type: ItemType,
-        max_stack: int = 33,
-    ):
-        self.name = name
-        self.description = description
-        self.max_stack = max_stack
-        self._item_type = item_type
-        self.__price = price
-        self.__condition = ItemCondition.GOOD.name
+class RarityType(Enum):
+    COMMON = 1
+    UNCOMMON = 2
+    RARE = 3
+    EPIC = 4
+    LEGEND = 5
 
-    def get_info(self):
-        return {
-            "name": self.name,
-            "price": self.__price,
-            "condition": self.__condition,
-            "type": self._item_type,
-        }
+
+RARITY_DROP_CHANCE = {
+    RarityType.COMMON: 0.5,
+    RarityType.UNCOMMON: 0.3,
+    RarityType.RARE: 0.1,
+    RarityType.EPIC: 0.08,
+    RarityType.LEGEND: 0.02,
+}
+RARITY_PRICE_MULTIPLIER = {
+    RarityType.COMMON: 1,
+    RarityType.UNCOMMON: 2,
+    RarityType.RARE: 5,
+    RarityType.EPIC: 15,
+    RarityType.LEGEND: 50,
+}
+
+BASE_PRICE_ITEM = {
+    ItemType.MATERIAL: 2,
+    ItemType.TOOLS: 3,
+    ItemType.FOOD: 1,
+    ItemType.SEED: 2,
+}
+
+
+class Item(ABC):
+    def __init__(self, name, item_type, rarity, max_stack=33):
+        self.name = name
+        self.max_stack = max_stack
+        self.rarity = rarity
+        self._item_type = item_type
+        self.__price = round(
+            BASE_PRICE_ITEM[item_type] * RARITY_PRICE_MULTIPLIER[rarity]
+        )
+        self.__condition = ItemCondition.GOOD
+
+    def __str__(self):
+        return (
+            f"Name      \t: {self.name}\n"
+            f"Price     \t: {self.__price}\n"
+            f"Condition\t: {self.__condition.name}\n"
+            f"Type      \t: {self._item_type.name}\n"
+        )
 
 
 class ItemStack:
@@ -91,60 +117,55 @@ class ItemStack:
 
 
 class Tools(Item):
-    def __init__(self, name: str, description: str, price: int, durability: int):
-        super().__init__(name, description, price, ItemType.TOOLS, 1)
-        self.durability = durability
-
-    def useTools(self):
-        self.durability -= 1
-        if self.durability <= 0:
-            self.condition = ItemCondition.BROKEN.name
+    def __init__(self, name, dura, materials: list[Material]):
+        rarity = max((m.rarity for m in materials), key=lambda r: r.value)
+        super().__init__(name, ItemType.TOOLS, rarity, 1)
+        self.durability = dura
+        self.materials = materials
 
 
 class Food(Item):
-    def __init__(self, name: str, description: str, price: int, calorie: int):
-        super().__init__(name, description, price, ItemType.FOOD)
-        self.bornDate = date.today()
+    def __init__(self, name, calorie, rarity):
+        super().__init__(name, ItemType.FOOD, rarity)
+        self.born_date = date.today()
         self.calorie = calorie
 
     @property
-    def ageInDays(self):
-        return date.today() - self.bornDate
+    def age_in_days(self):
+        return date.today() - self.born_date
 
     def rotten(self):
-        if self.ageInDays.days >= 5:
+        if self.age_in_days.days >= 5:
             self.condition = ItemCondition.ROTTEN.name
 
 
 class Material(Item):
-    def __init__(self, name, description, price, rarity, material_type: MaterialType):
-        super().__init__(name, description, price, ItemType.MATERIAL)
-        self.rarity = rarity
+    def __init__(self, name, material_type: MaterialType, rarity: RarityType):
+        super().__init__(
+            name,
+            ItemType.MATERIAL,
+            rarity,
+        )
         self.material_type = material_type
-        self.is_process = False
 
 
 class Seed(Item):
     def __init__(
         self,
         name: str,
-        description: str,
-        price: int,
         growthPeriodInDays: int,
         season: Season,
+        rarity: RarityType,
     ):
-        super().__init__(name, description, price, ItemType.SEED)
+        super().__init__(name, ItemType.SEED, rarity)
         self.growthPeriod = growthPeriodInDays
         self.season = season
 
 
-listTools = [Tools("Sycthe Stone", "...", 3, 30), Tools("Pickaxe Stone", "...", 4, 33)]
 listFoods = [
-    Food("G MILK 🥛", "...", 40, 50),
-    Food("M MILK 🥛", "...", 30, 30),
-    Food("S MILK 🥛", "...", 15, 15),
+    Food("G MILK 🥛", 40, RarityType.EPIC),
+    Food("M MILK 🥛", 30, RarityType.UNCOMMON),
+    Food("S MILK 🥛", 15, RarityType.COMMON),
 ]
-listMaterial = [
-    Material("Iron Ore", "Just Iron...", 3, 2, MaterialType.IRON),
-    Material("Wood", "..", 1, 1, MaterialType.WOOD),
-]
+print(listFoods[0])
+listMaterial = ["Diamond", "", 10, RarityType.EPIC, MaterialType.IRON]
