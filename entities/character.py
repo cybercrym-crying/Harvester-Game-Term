@@ -1,7 +1,6 @@
-from item import Tools
 from systems.inventory_system import InventorySystem
 from abc import ABC, abstractmethod
-from item import Food, ItemCondition
+from entities.item import Food, ItemCondition, Tools
 from datetime import date
 from InquirerPy import inquirer, prompts
 from utils.utility import clear_screen, validate_input

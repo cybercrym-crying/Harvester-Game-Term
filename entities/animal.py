@@ -1,9 +1,9 @@
-from world_object import WorldObject
+from entities.world_object import WorldObject
 from abc import ABC, abstractmethod
 from datetime import date, timedelta
 from core.enums import AnimalStatus, AnimalDisease
 from InquirerPy import inquirer
-from utils.utility import clear_screen
+from utils.utility import clear_screen, check_term_size
 import random
 import subprocess
 
@@ -40,7 +40,7 @@ class Animal(WorldObject, ABC):
 
         return (
             f"Name: {self.name}\n"
-            f"Is Alive: {self.isAlive}\n"
+            f"Is Alive: {self.is_alive}\n"
             f"Id: {self.idWO}\n"
             f"Health: {self.health}\n"
             f"Date Last Meal: {self.dateLastMeal}\n"
@@ -84,7 +84,7 @@ class Animal(WorldObject, ABC):
         ):
             self.health -= 2
             if self.health <= 0:
-                self.isAlive = False
+                self.is_alive = False
         else:
             self.health += 2
 
@@ -185,7 +185,7 @@ class Cow(Animal):
 
     def get_info(self):
         img_rows = 12
-        if self.isAlive:
+        if self.is_alive:
             self.get_info_image(
                 "assets/cow.png",
                 super().__str__(),
@@ -222,7 +222,7 @@ class Chicken(Animal):
 
     def get_info(self):
         img_rows = 12
-        if self.isAlive:
+        if self.is_alive:
             self.get_info_image(
                 "assets/chicken.png",
                 super().__str__(),
@@ -244,6 +244,7 @@ class Chicken(Animal):
 
 
 def show_animal(list_animal: list):
+
     i = 0
     while i < len(list_animal):
         list_animal[i].get_info()

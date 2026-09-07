@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from enum import Enum, auto
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from main import clock
 from core.enums import (
     RarityType,
     ItemType,
@@ -13,6 +12,7 @@ from core.enums import (
     RARITY_PRICE_MULTIPLIER,
     RARITY_DROP_CHANCE,
 )
+from systems.time_system import clock
 
 
 class Item(ABC):

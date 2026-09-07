@@ -18,7 +18,7 @@ class Corp(WorldObject):
         return f"""
                     {self.name}
                     {self.__bornDate}
-                    {self.isAlive}
+                    {self.is_alive}
                     {self.idWO}
                 {self.is_watered}
                 {self.is_fertilized}
@@ -33,7 +33,7 @@ class Corp(WorldObject):
         self.is_fertilized = True
 
     def ready_to_harvest(self):
-        if self.days_lived == self.days_to_grow and self.isAlive == True:
+        if self.days_lived == self.days_to_grow and self.is_alive == True:
             self.is_watered = True
 
 
