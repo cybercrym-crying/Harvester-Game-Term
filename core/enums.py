@@ -44,6 +44,13 @@ class Season(Enum):
     WINTER = auto()
 
 
+class CorpType(Enum):
+    HERB = auto()
+    FLOWER = auto()
+    FRUIT = auto()
+    VEGETABLE = auto()
+
+
 class RarityType(Enum):
     COMMON = 1
     UNCOMMON = 2
