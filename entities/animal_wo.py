@@ -1,7 +1,7 @@
 from entities.world_object import WorldObject
 from abc import ABC, abstractmethod
 from datetime import date, timedelta
-from core.enums import AnimalStatus, AnimalDisease
+from core.enums import AnimalStatus, TypeDisease
 from InquirerPy import inquirer
 from utils.utility import clear_screen, check_term_size
 import random
@@ -18,7 +18,7 @@ class Animal(WorldObject, ABC):
             "Hungry Status": AnimalStatus.NOTHUNGRY.name,
             "Sick Status": {
                 "Condition": AnimalStatus.HEALTHY.name,
-                "Disease": AnimalDisease.NONE.name,
+                "TypeDisease": TypeDisease.NONE.name,
             },
             "Harvest Status": AnimalStatus.NOTREADY.name,
             "Love Status": {"Condition": False, "Cooldown": 0},
@@ -110,7 +110,7 @@ class Animal(WorldObject, ABC):
             self.__sickProb = 10
         if random.random() < self.__sickProb:
             self.status["Sick Status"]["Condition"] = AnimalStatus.SICK.name
-            self.status["Sick Status"]["Disease"] = random.choice(list(AnimalDisease))
+            self.status["Sick Status"]["TypeDisease"] = random.choice(list(TypeDisease))
 
     @abstractmethod
     def check_accepted_consumption(self, consumption) -> bool:
@@ -120,11 +120,11 @@ class Animal(WorldObject, ABC):
         if self.status["Sick Status"]["Condition"] == AnimalStatus.SICK.name:
             if (
                 self.check_accepted_consumption(consumption)
-                and f"{self.status['Sick Status']['Disease'].lower()}"
+                and f"{self.status['Sick Status']['TypeDisease'].lower()}"
                 in consumption.lower()
             ):
                 self.status["Sick Status"]["Condition"] = AnimalStatus.HEALTHY.name
-                self.status["Sick Status"]["Disease"] = None
+                self.status["Sick Status"]["TypeDisease"] = None
         else:
             pass
 

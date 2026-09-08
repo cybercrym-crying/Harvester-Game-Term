@@ -1,3 +1,10 @@
+from entities.item import Item, ItemStack
+from core.enums import ItemType
+import copy
+from InquirerPy import inquirer
+from rich.table import Table, Console
+
+
 class InventorySystem:
     def __init__(self):
         self.slot = 10

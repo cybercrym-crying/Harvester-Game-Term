@@ -4,13 +4,15 @@ from core.enums import CorpType
 
 
 class Corp(WorldObject):
+    is_watered = False
+    is_fertilized = False
+    is_harvested = False
+    days_lived = 0
+
     def __init__(self, name, days_to_grow, corp_type: CorpType):
         super().__init__(name, "CORP")
         self.name = name
-        self.is_watered = False
-        self.is_fertilized = False
-        self.is_harvested = False
-        self.days_lived = 0
+
         self.days_to_grow = days_to_grow
         self.corp_type = corp_type
 
@@ -37,4 +39,4 @@ class Corp(WorldObject):
             self.is_watered = True
 
 
-corp = Corp("Tomato", 3, CorpType.VEGETABLE)
+list_corp = {"Tomato": Corp("Tomato", 3, CorpType.VEGETABLE)}

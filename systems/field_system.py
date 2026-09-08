@@ -1,4 +1,4 @@
-from entities.corp import Corp
+from entities.corp_wo import Corp
 from entities.item import ItemStack, Item, WateringCane
 
 

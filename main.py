@@ -1,7 +1,7 @@
-from entities.animal import Cow, Animal, Chicken, show_animal
+from entities.animal_wo import Cow, Animal, Chicken, show_animal
 from entities.character import Player, createChar
 from entities.item import ItemStack
-from entities.consumable import Food
+from entities.consumable_item import Food
 from InquirerPy import inquirer, prompts
 from utils.utility import clear_screen, wait_for_upscale_term, game_loading
 from systems.time_system import TimeSystem
