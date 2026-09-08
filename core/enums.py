@@ -10,7 +10,7 @@ class AnimalStatus(Enum):
     NOTREADY = auto()
 
 
-class AnimalDisease(Enum):
+class TypeDisease(Enum):
     FEVER = auto()
     FLU = auto()
     VIRUS = auto()
@@ -25,7 +25,7 @@ class ItemCondition(Enum):
 
 class ItemType(Enum):
     TOOLS = auto()
-    FOOD = auto()
+    CONSUMABLE = auto()
     MATERIAL = auto()
     SEED = auto()
 
@@ -35,13 +35,6 @@ class MaterialType(Enum):
     IRON = auto()
     HERB = auto()
     STONE = auto()
-
-
-class Season(Enum):
-    SPRING = auto()
-    SUMMER = auto()
-    AUTUMN = auto()
-    WINTER = auto()
 
 
 class CorpType(Enum):
@@ -57,6 +50,14 @@ class RarityType(Enum):
     RARE = 3
     EPIC = 4
     LEGEND = 5
+
+
+class FoodType(Enum):
+    FRUIT = auto()
+    VEGETABLE = auto()
+    MEAL = auto()
+    GRAIN = auto()
+    HERB = auto()
 
 
 RARITY_DROP_CHANCE = {
@@ -77,6 +78,6 @@ RARITY_PRICE_MULTIPLIER = {
 BASE_PRICE_ITEM = {
     ItemType.MATERIAL: 2,
     ItemType.TOOLS: 3,
-    ItemType.FOOD: 1,
+    ItemType.CONSUMABLE: 1,
     ItemType.SEED: 2,
 }

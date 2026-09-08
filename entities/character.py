@@ -1,6 +1,7 @@
 from systems.inventory_system import InventorySystem
 from abc import ABC, abstractmethod
-from entities.item import Food, ItemCondition, Tools
+from entities.item import ItemCondition, Tools
+from entities.consumable import Food
 from datetime import date
 from InquirerPy import inquirer, prompts
 from utils.utility import clear_screen, validate_input
@@ -24,6 +25,8 @@ class Player(Character):
         self.strength = 100
         self.stamina = 100
 
+
+"""
     def eating(self, food: Food):
         if food.condition == ItemCondition.GOOD.name and self.stamina < 100:
             if food.calorie <= (100 - self.stamina):
@@ -31,6 +34,7 @@ class Player(Character):
             else:
                 self.stamina += food.calorie - (food.calorie - (100 - self.stamina))
                 food.calorie -= 100 - self.stamina
+"""
 
 
 def createChar():

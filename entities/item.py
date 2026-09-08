@@ -7,7 +7,6 @@ from core.enums import (
     ItemType,
     ItemCondition,
     MaterialType,
-    Season,
     BASE_PRICE_ITEM,
     RARITY_PRICE_MULTIPLIER,
     RARITY_DROP_CHANCE,
@@ -85,19 +84,21 @@ class Tools(Item):
         self.materials = materials
 
 
-class Food(Item):
-    def __init__(self, name, calorie, rarity):
-        super().__init__(name, ItemType.FOOD, rarity)
-        self.born_date = date.today()
-        self.calorie = calorie
+class WateringCane(Tools):
+    def __init__(self):
+        super().__init__("Watering Cane", 100, [listMaterial[0]])
+        self.max_water = 100
+        self.curr_water = 100
 
-    @property
-    def age_in_days(self):
-        return clock.get_date() - self.born_date
+    def fill_water(self):
+        self.curr_water = 100
 
-    def rotten(self):
-        if self.age_in_days.days >= 5:
-            self.condition = ItemCondition.ROTTEN.name
+    def use_water(self, amount):
+        if amount >= self.curr_water:
+            return False
+        else:
+            self.curr_water = -amount
+            return True
 
 
 class Material(Item):
@@ -110,22 +111,4 @@ class Material(Item):
         self.material_type = material_type
 
 
-class Seed(Item):
-    def __init__(
-        self,
-        name: str,
-        growthPeriodInDays: int,
-        season: Season,
-        rarity: RarityType,
-    ):
-        super().__init__(name, ItemType.SEED, rarity)
-        self.growthPeriod = growthPeriodInDays
-        self.season = season
-
-
-listFoods = [
-    Food("G MILK 🥛", 40, RarityType.EPIC),
-    Food("M MILK 🥛", 30, RarityType.UNCOMMON),
-    Food("S MILK 🥛", 15, RarityType.COMMON),
-]
-listMaterial = ["Diamond", "", 10, RarityType.EPIC, MaterialType.IRON]
+listMaterial = [Material("Iron", MaterialType.IRON, RarityType.UNCOMMON)]
