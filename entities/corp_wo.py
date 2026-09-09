@@ -37,6 +37,3 @@ class Corp(WorldObject):
     def ready_to_harvest(self):
         if self.days_lived == self.days_to_grow and self.is_alive == True:
             self.is_watered = True
-
-
-list_corp = {"Tomato": Corp("Tomato", 3, CorpType.VEGETABLE)}

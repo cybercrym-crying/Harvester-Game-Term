@@ -58,6 +58,8 @@ class FoodType(Enum):
     MEAL = auto()
     GRAIN = auto()
     HERB = auto()
+    SPICE = auto()
+    MEAT = auto()
 
 
 RARITY_DROP_CHANCE = {

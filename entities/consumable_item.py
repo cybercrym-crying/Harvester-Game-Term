@@ -1,7 +1,7 @@
 from .item import Item
 from .character import Player
 from .animal_wo import Animal
-from .corp_wo import Corp, list_corp
+from .corp_wo import Corp
 from core.enums import ItemType, RarityType, FoodType, TypeDisease
 from abc import ABC, abstractmethod
 
@@ -39,41 +39,7 @@ class Medicine(Consumable):
         super().__init__(name, rarity)
 
 
-class Fertilizer(Consumable):
-    def __init__(self, name):
-        super().__init__(name, RarityType.COMMON)
-
-
 class Seed(Consumable):
     def __init__(self, name, rarity, corp_type: Corp):
         super().__init__(name, rarity)
         self.corp_type = corp_type
-
-
-list_herb = {
-    "Ginger": Food("Ginger", FoodType.HERB, RarityType.UNCOMMON),
-    "Turmeric": Food("Turmeric", FoodType.HERB, RarityType.COMMON),
-}
-list_food = {
-    "Rice": Food("Rice", FoodType.GRAIN, RarityType.UNCOMMON),
-    "White Onion": Food("White Onion", FoodType.FRUIT, RarityType.COMMON),
-}
-list_player_medicine = {
-    "flu": Medicine(
-        "Flu Medicine",
-        10,
-        TypeDisease.FLU,
-        Player,
-        [list_herb["Ginger"], list_herb["Turmeric"]],
-    )
-}
-
-list_meal = [
-    Food(
-        "Fried Rice",
-        FoodType.MEAL,
-        recipe=[list_food["Rice"], list_food["White Onion"]],
-    )
-]
-
-list_seed = {"Tomato Seed": Seed("Tomato Seed", RarityType.COMMON, list_corp["Tomato"])}
