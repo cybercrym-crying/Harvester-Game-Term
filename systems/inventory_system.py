@@ -2,7 +2,8 @@ from entities.item import Item, ItemStack
 from core.enums import ItemType
 import copy
 from InquirerPy import inquirer
-from rich.table import Table, Console
+from rich.table import Table
+from rich.console import Console
 
 
 class InventorySystem:

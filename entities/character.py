@@ -1,7 +1,7 @@
 from systems.inventory_system import InventorySystem
 from abc import ABC, abstractmethod
 from entities.item import ItemCondition, Tools
-from entities.consumable_item import Food
+from data.item_data import list_item
 from datetime import date
 from InquirerPy import inquirer, prompts
 from utils.utility import clear_screen, validate_input
@@ -25,6 +25,25 @@ class Player(Character):
         self.strength = 100
         self.stamina = 100
 
+    @staticmethod
+    def create_player():
+        confirm = False
+        while not confirm:
+            name = inquirer.text(message="What's your name:").execute()
+            if validate_input(name):
+                gender = inquirer.select(
+                    message="What's your Gender:",
+                    choices=["Man", "Woman"],
+                ).execute()
+                confirm = inquirer.confirm(message="Confirm?").execute()
+                if confirm:
+                    player = Player(name, gender, date.today())
+                    player.inventory
+                    return Player(name, gender, date.today())
+                else:
+                    clear_screen()
+                    continue
+
 
 """
     def eating(self, food: Food):
@@ -35,20 +54,3 @@ class Player(Character):
                 self.stamina += food.calorie - (food.calorie - (100 - self.stamina))
                 food.calorie -= 100 - self.stamina
 """
-
-
-def createChar():
-    confirm = False
-    while not confirm:
-        name = inquirer.text(message="What's your name:").execute()
-        if validate_input(name):
-            gender = inquirer.select(
-                message="What's your Gender:",
-                choices=["Man", "Woman"],
-            ).execute()
-            confirm = inquirer.confirm(message="Confirm?").execute()
-            if confirm:
-                return Player(name, gender, date.today())
-            else:
-                clear_screen()
-                continue

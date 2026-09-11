@@ -2,13 +2,14 @@ from abc import ABC, abstractmethod
 from enum import Enum, auto
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from data.item_data import list_material
 from core.enums import (
     RarityType,
     ItemType,
     ItemCondition,
     MaterialType,
     BASE_PRICE_ITEM,
-    RARITY_PRICE_MULTIPLIER,
+    RARITY_MULTIPLIER,
     RARITY_DROP_CHANCE,
 )
 from systems.time_system import clock
@@ -20,9 +21,7 @@ class Item(ABC):
         self.max_stack = max_stack
         self.rarity = rarity
         self._item_type = item_type
-        self.__price = round(
-            BASE_PRICE_ITEM[item_type] * RARITY_PRICE_MULTIPLIER[rarity]
-        )
+        self.__price = round(BASE_PRICE_ITEM[item_type] * RARITY_MULTIPLIER[rarity])
         self.__condition = ItemCondition.GOOD
 
     def __str__(self):
@@ -77,16 +76,16 @@ class ItemStack:
 
 
 class Tools(Item):
-    def __init__(self, name, dura, materials: list[Material]):
+    def __init__(self, name, materials: list[Material]):
         rarity = max((m.rarity for m in materials), key=lambda r: r.value)
         super().__init__(name, ItemType.TOOLS, rarity, 1)
-        self.durability = dura
+        self.durability = RARITY_MULTIPLIER[rarity] * 10
         self.materials = materials
 
 
 class WateringCane(Tools):
     def __init__(self):
-        super().__init__("Watering Cane", 100, [listMaterial[0]])
+        super().__init__("Watering Cane", [list_material["Silver"]])
         self.max_water = 100
         self.curr_water = 100
 
@@ -109,6 +108,3 @@ class Material(Item):
             rarity,
         )
         self.material_type = material_type
-
-
-listMaterial = [Material("Iron", MaterialType.IRON, RarityType.UNCOMMON)]

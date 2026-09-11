@@ -14,7 +14,8 @@ class TypeDisease(Enum):
     FEVER = auto()
     FLU = auto()
     VIRUS = auto()
-    NONE = auto()
+    COUGH = auto()
+    STOMACH_ACHE = auto()
 
 
 class ItemCondition(Enum):
@@ -32,9 +33,11 @@ class ItemType(Enum):
 
 class MaterialType(Enum):
     WOOD = auto()
-    IRON = auto()
+    METAL = auto()
+    GEM = auto()
     HERB = auto()
     STONE = auto()
+    ORGANIC = auto()
 
 
 class CorpType(Enum):
@@ -42,6 +45,7 @@ class CorpType(Enum):
     FLOWER = auto()
     FRUIT = auto()
     VEGETABLE = auto()
+    GRAIN = auto()
 
 
 class RarityType(Enum):
@@ -60,6 +64,7 @@ class FoodType(Enum):
     HERB = auto()
     SPICE = auto()
     MEAT = auto()
+    DAIRY = auto()
 
 
 RARITY_DROP_CHANCE = {
@@ -69,7 +74,7 @@ RARITY_DROP_CHANCE = {
     RarityType.EPIC: 0.08,
     RarityType.LEGEND: 0.02,
 }
-RARITY_PRICE_MULTIPLIER = {
+RARITY_MULTIPLIER = {
     RarityType.COMMON: 1,
     RarityType.UNCOMMON: 2,
     RarityType.RARE: 5,
