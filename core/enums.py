@@ -48,6 +48,11 @@ class CorpType(Enum):
     GRAIN = auto()
 
 
+class Effect(Enum):
+    HEAL = 1.5
+    STAMINA = 1
+
+
 class RarityType(Enum):
     COMMON = 1
     UNCOMMON = 2
@@ -67,6 +72,8 @@ class FoodType(Enum):
     DAIRY = auto()
 
 
+BASE_EFFECT = {Effect.HEAL: 5, Effect.STAMINA: 2}
+
 RARITY_DROP_CHANCE = {
     RarityType.COMMON: 0.5,
     RarityType.UNCOMMON: 0.3,
@@ -75,9 +82,9 @@ RARITY_DROP_CHANCE = {
     RarityType.LEGEND: 0.02,
 }
 RARITY_MULTIPLIER = {
-    RarityType.COMMON: 1,
-    RarityType.UNCOMMON: 2,
-    RarityType.RARE: 5,
+    RarityType.COMMON: 3,
+    RarityType.UNCOMMON: 5,
+    RarityType.RARE: 7,
     RarityType.EPIC: 15,
     RarityType.LEGEND: 50,
 }

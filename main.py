@@ -1,4 +1,4 @@
-from entities.character import createChar
+from entities.character import *
 from InquirerPy import inquirer, prompts
 from utils.utility import clear_screen, wait_for_upscale_term, game_loading
 import climage

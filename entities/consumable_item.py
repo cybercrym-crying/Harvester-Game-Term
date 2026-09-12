@@ -2,8 +2,17 @@ from .item import Item
 from .character import Player
 from .animal_wo import Animal
 from .corp_wo import Corp
-from core.enums import ItemType, RarityType, FoodType, TypeDisease
+from core.enums import (
+    ItemType,
+    RarityType,
+    FoodType,
+    TypeDisease,
+    Effect,
+    RARITY_MULTIPLIER,
+)
 from abc import ABC, abstractmethod
+from copy import deepcopy
+import math
 
 
 class Consumable(Item):
@@ -14,11 +23,29 @@ class Consumable(Item):
 # jika tipe makanan menggunakan recipe berarti rarity di ambil dari recipe
 # jika tipe makanan tidak menggunakan recipe berarti rarity di ambil dari masukan
 class Food(Consumable):
-    def __init__(self, name, food_type, rarity=None, recipe: list[Food] | None = None):
-        self.food_type = food_type
+    def __init__(
+        self,
+        name,
+        food_type,
+        effect: list[Effect] = [],
+        rarity=RarityType.COMMON,
+        recipe: list[Food] = [],
+    ):
+        self.effect = effect or []
         self.recipe = recipe or []
-        if self.recipe:
+        self.food_type = food_type
+        temp_effect = {}
+        if not self.recipe:
+            for e in self.effect:
+                temp_effect[e] = math.ceil(e.value * RARITY_MULTIPLIER[rarity])
+            self.effect = temp_effect.copy()
+            temp_effect.clear()
+        else:
             rarity = max((rcp.rarity for rcp in self.recipe), key=lambda r: r.value)
+            for r in recipe:
+                for e in r.effect:
+                    temp_effect[e] = None
+
         super().__init__(name, rarity)
 
 
