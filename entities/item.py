@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from enum import Enum, auto
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from data.item_data import list_material
 from core.enums import (
     RarityType,
     ItemType,
@@ -85,6 +84,8 @@ class Tools(Item):
 
 class WateringCane(Tools):
     def __init__(self):
+        from data.item_data import list_material
+
         super().__init__("Watering Cane", [list_material["Silver"]])
         self.max_water = 100
         self.curr_water = 100

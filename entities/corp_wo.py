@@ -1,4 +1,4 @@
-from world_object import WorldObject
+from entities.world_object import WorldObject
 from abc import ABC, abstractmethod
 from core.enums import CorpType
 

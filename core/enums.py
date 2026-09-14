@@ -72,21 +72,21 @@ class FoodType(Enum):
     DAIRY = auto()
 
 
-BASE_EFFECT = {Effect.HEAL: 5, Effect.STAMINA: 2}
+BASE_EFFECT = {Effect.HEAL: 1.5, Effect.STAMINA: 1}
 
 RARITY_DROP_CHANCE = {
     RarityType.COMMON: 0.5,
     RarityType.UNCOMMON: 0.3,
     RarityType.RARE: 0.1,
-    RarityType.EPIC: 0.08,
-    RarityType.LEGEND: 0.02,
+    RarityType.EPIC: 0.07,
+    RarityType.LEGEND: 0.03,
 }
 RARITY_MULTIPLIER = {
     RarityType.COMMON: 3,
     RarityType.UNCOMMON: 5,
     RarityType.RARE: 7,
-    RarityType.EPIC: 15,
-    RarityType.LEGEND: 50,
+    RarityType.EPIC: 18,
+    RarityType.LEGEND: 40,
 }
 
 BASE_PRICE_ITEM = {

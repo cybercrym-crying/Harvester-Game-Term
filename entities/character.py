@@ -1,11 +1,9 @@
 from systems.inventory_system import InventorySystem
-from data.item_data import Tools
 from abc import ABC, abstractmethod
-from entities.item import ItemStack, ItemCondition, Tools, WateringCane
-from data.item_data import list_item, list_tool, list_meal
 from datetime import date
 from InquirerPy import inquirer, prompts
 from utils.utility import clear_screen, validate_input
+from core.enums import Effect
 
 
 class Character(ABC):
@@ -22,12 +20,62 @@ class Player(Character):
     def __init__(self, name, gender, bornDate):
         super().__init__(name, gender, bornDate=date.today())
         self.gold = 100
-        self.stamina = 50
-        self.health = 100
+        self.stamina = 30
+        self.health = 50
+        self.type_disease = None
         self.inventory = InventorySystem()
+
+    def __str__(self):
+        return (
+            f"Name:   \t{self.name}\n"
+            f"Gender: \t{self.gender}\n"
+            f"Gold:   \t{self.gold}\n"
+            f"Stamina:\t{self.stamina}\n"
+            f"Health: \t{self.health}\n"
+            f"Disease \t{self.type_disease}\n"
+        )
+
+    def eat(self, consumable):
+        from entities.consumable_item import Food, Medicine
+
+        if isinstance(consumable, Food):
+            for k, v in consumable.effect.items():
+                if k == Effect.HEAL:
+                    self.add_health(v)
+                else:
+                    self.add_stamina(v)
+        elif isinstance(consumable, Medicine):
+            pass
+
+    def add_health(self, amount):
+        if self.health + amount >= 100:
+            self.health = 100
+        else:
+            self.health += amount
+
+    def sub_health(self, amount):
+        if self.health - amount <= 0:
+            self.health = 0
+        else:
+            self.health -= amount
+
+    def add_stamina(self, amount):
+        if self.stamina + amount >= 50:
+            self.stamina = 50
+        else:
+            self.stamina += amount
+
+    def sub_stamina(self, amount):
+        if self.stamina - amount <= 0:
+            self.stamina = 0
+        else:
+            self.stamina -= amount
 
     @staticmethod
     def create_player():
+        from data.item_data import list_item, list_tool, list_meal
+        from entities.item import ItemStack, ItemCondition, Tools, WateringCane
+
         confirm = False
         while not confirm:
             name = inquirer.text(message="What's your name:").execute()

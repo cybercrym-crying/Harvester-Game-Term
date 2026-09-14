@@ -8,6 +8,7 @@ from core.enums import (
     FoodType,
     TypeDisease,
     Effect,
+    BASE_EFFECT,
     RARITY_MULTIPLIER,
 )
 from abc import ABC, abstractmethod
@@ -37,16 +38,39 @@ class Food(Consumable):
         temp_effect = {}
         if not self.recipe:
             for e in self.effect:
-                temp_effect[e] = math.ceil(e.value * RARITY_MULTIPLIER[rarity])
-            self.effect = temp_effect.copy()
+                temp_effect[e] = math.ceil(BASE_EFFECT[e] * RARITY_MULTIPLIER[rarity])
+            self.effect = deepcopy(temp_effect)
             temp_effect.clear()
         else:
             rarity = max((rcp.rarity for rcp in self.recipe), key=lambda r: r.value)
             for r in recipe:
                 for e in r.effect:
-                    temp_effect[e] = None
+                    temp_effect[e] = 0
+            for k, v in temp_effect.items():
+                temp_effect[k] = math.ceil(
+                    BASE_EFFECT[k]
+                    * RARITY_MULTIPLIER[rarity]
+                    * (math.ceil(len(self.recipe) * 0.6))
+                )
+            self.effect = deepcopy(temp_effect)
+            temp_effect.clear()
 
         super().__init__(name, rarity)
+
+    def __str__(self):
+        if isinstance(self.effect, dict):
+            list_effect = ", ".join(f"{k.name} +{v}" for k, v in self.effect.items())
+            list_recipe = (
+                ", ".join(f"{r.name}" for r in self.recipe) if self.recipe else None
+            )
+            return (
+                f"Name:  \t{self.name}\n"
+                f"Type:  \t{self.food_type.name}\n"
+                f"Rarity:\t{self.rarity.name}\n"
+                f"Effect:\t{list_effect}\n"
+                f"Recipe:\t{list_recipe}\n"
+            )
+        return ""
 
 
 class Medicine(Consumable):
