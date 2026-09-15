@@ -38,6 +38,10 @@ class Player(Character):
     def eat(self, consumable):
         from entities.consumable_item import Food, Medicine
 
+        if Player not in consumable.target_entities:
+            print(f"Cannot eat that thing...")
+            return
+        print(f"Eating {consumable.name}\n")
         if isinstance(consumable, Food):
             for k, v in consumable.effect.items():
                 if k == Effect.HEAL:
@@ -73,7 +77,7 @@ class Player(Character):
 
     @staticmethod
     def create_player():
-        from data.item_data import list_item, list_tool, list_meal
+        from data.item_data import list_tool, list_meal
         from entities.item import ItemStack, ItemCondition, Tools, WateringCane
 
         confirm = False

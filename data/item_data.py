@@ -1,4 +1,4 @@
-from entities.consumable_item import Food, Medicine, Seed
+from entities.consumable_item import Food, Medicine
 from entities.item import Tools, Material
 from entities.character import Player
 from entities.animal_wo import Animal
@@ -93,13 +93,6 @@ list_tool = {
     "Shears": Tools("Shears", [list_material["Steel"], list_material["Leather"]]),
     "Hay Fork": Tools("Hay Fork", [list_material["Iron"], list_material["Pine Wood"]]),
 }
-list_item = {
-    "Fertelizer": Consumable("Fertelizer", RarityType.COMMON),
-    "Pesticide": Consumable("Pesticide", RarityType.COMMON),
-    "Growth Potion": Consumable("Growth Potion", RarityType.RARE),
-    "Animal Feed": Consumable("Animal Feed", RarityType.COMMON),
-    "Water Bucket": Consumable("Water Bucket", RarityType.COMMON),
-}
 
 list_corp = {
     "Tomato": Corp("Tomato", 3, CorpType.VEGETABLE),
@@ -114,133 +107,123 @@ list_corp = {
     "Rice": Corp("Rice", 5, CorpType.GRAIN),
 }
 
-list_seed = {
-    "Tomato Seed": Seed("Tomato Seed", RarityType.COMMON, list_corp["Tomato"]),
-    "Corn Seed": Seed("Corn Seed", RarityType.UNCOMMON, list_corp["Corn"]),
-    "Potato Seed": Seed("Potato Seed", RarityType.COMMON, list_corp["Potato"]),
-    "Carrot Seed": Seed("Carrot Seed", RarityType.COMMON, list_corp["Carrot"]),
-    "Ginger Seed": Seed("Ginger Seed", RarityType.UNCOMMON, list_corp["Ginger"]),
-    "Turmeric Seed": Seed("Turmeric Seed", RarityType.UNCOMMON, list_corp["Turmeric"]),
-    "Lemongrass Seed": Seed(
-        "Lemongrass Seed", RarityType.COMMON, list_corp["Lemongrass"]
-    ),
-    "Galangal Seed": Seed("Galangal Seed", RarityType.UNCOMMON, list_corp["Galangal"]),
-    "Wheat Seed": Seed("Wheat Seed", RarityType.UNCOMMON, list_corp["Wheat"]),
-    "Rice Seed": Seed("Rice Seed", RarityType.RARE, list_corp["Rice"]),
-}
 
 list_herb = {
     "Ginger": Food(
         "Ginger",
         FoodType.HERB,
+        [Player],
         [Effect.HEAL, Effect.STAMINA],
         RarityType.UNCOMMON,
     ),
-    "Turmeric": Food("Turmeric", FoodType.HERB, [Effect.HEAL], RarityType.COMMON),
+    "Turmeric": Food(
+        "Turmeric", FoodType.HERB, [Player, Animal], [Effect.HEAL], RarityType.COMMON
+    ),
     "Aromatic Ginger": Food(
-        "Aromatic Ginger", FoodType.HERB, [Effect.HEAL], RarityType.UNCOMMON
+        "Aromatic Ginger", FoodType.HERB, [Player], [Effect.HEAL], RarityType.UNCOMMON
     ),
     "Lemongrass": Food(
-        "Lemongrass", FoodType.HERB, [Effect.STAMINA], RarityType.COMMON
+        "Lemongrass", FoodType.HERB, [Player], [Effect.STAMINA], RarityType.COMMON
     ),
-    "Galangal": Food("Galangal", FoodType.HERB, [Effect.STAMINA], RarityType.COMMON),
-    "Pandan": Food("Pandan", FoodType.HERB, [Effect.STAMINA], RarityType.UNCOMMON),
-    "Cinnamon": Food("Cinnamon", FoodType.HERB, [Effect.STAMINA], RarityType.RARE),
+    "Galangal": Food(
+        "Galangal", FoodType.HERB, [Player], [Effect.STAMINA], RarityType.COMMON
+    ),
+    "Pandan": Food(
+        "Pandan", FoodType.HERB, [Animal], [Effect.STAMINA], RarityType.UNCOMMON
+    ),
+    "Cinnamon": Food(
+        "Cinnamon", FoodType.HERB, [Player], [Effect.STAMINA], RarityType.RARE
+    ),
     "Ginseng": Food(
         "Ginseng",
         FoodType.HERB,
+        [Player],
         [Effect.HEAL, Effect.STAMINA],
         RarityType.LEGEND,
     ),
-    "Basil": Food("Basil", FoodType.HERB, [Effect.HEAL], RarityType.COMMON),
-    "Mint": Food("Mint", FoodType.HERB, [Effect.HEAL], RarityType.COMMON),
+    "Basil": Food("Basil", FoodType.HERB, [Player], [Effect.HEAL], RarityType.COMMON),
+    "Mint": Food("Mint", FoodType.HERB, [Player], [Effect.HEAL], RarityType.COMMON),
 }
 
 list_food = {
-    "Rice": Food("Rice", FoodType.GRAIN, [Effect.HEAL], RarityType.UNCOMMON),
-    "Wheat": Food("Wheat", FoodType.GRAIN, [Effect.HEAL], RarityType.COMMON),
-    "Garlic": Food("Garlic", FoodType.SPICE, [Effect.HEAL], RarityType.COMMON),
-    "Red Onion": Food("Red Onion", FoodType.SPICE, [Effect.STAMINA], RarityType.COMMON),
-    "Chili": Food("Chili", FoodType.SPICE, [Effect.HEAL], RarityType.COMMON),
+    "Rice": Food(
+        "Rice", FoodType.GRAIN, [Player, Animal], [Effect.HEAL], RarityType.UNCOMMON
+    ),
+    "Wheat": Food(
+        "Wheat", FoodType.GRAIN, [Player, Animal], [Effect.HEAL], RarityType.COMMON
+    ),
+    "Garlic": Food(
+        "Garlic", FoodType.SPICE, [Player], [Effect.HEAL], RarityType.COMMON
+    ),
+    "Red Onion": Food(
+        "Red Onion", FoodType.SPICE, [Player], [Effect.STAMINA], RarityType.COMMON
+    ),
+    "Chili": Food("Chili", FoodType.SPICE, [Player], [Effect.HEAL], RarityType.COMMON),
     "Chicken": Food(
         "Chicken",
         FoodType.MEAT,
+        [Player],
         [Effect.HEAL, Effect.STAMINA],
         RarityType.UNCOMMON,
     ),
-    "Beef": Food("Beef", FoodType.MEAT, [Effect.STAMINA], RarityType.RARE),
-    "Mutton": Food("Mutton", FoodType.MEAT, [Effect.STAMINA], RarityType.RARE),
-    "Egg": Food("Egg", FoodType.MEAT, [Effect.HEAL], RarityType.COMMON),
-    "Milk": Food("Milk", FoodType.DAIRY, [Effect.STAMINA], RarityType.COMMON),
-    "Cheese": Food("Cheese", FoodType.DAIRY, [Effect.HEAL], RarityType.UNCOMMON),
-    "Tomato": Food("Tomato", FoodType.VEGETABLE, [Effect.HEAL], RarityType.COMMON),
-    "Potato": Food("Potato", FoodType.VEGETABLE, [Effect.STAMINA], RarityType.COMMON),
-    "Carrot": Food("Carrot", FoodType.VEGETABLE, [Effect.HEAL], RarityType.COMMON),
+    "Beef": Food("Beef", FoodType.MEAT, [Player], [Effect.STAMINA], RarityType.RARE),
+    "Mutton": Food(
+        "Mutton", FoodType.MEAT, [Player], [Effect.STAMINA], RarityType.RARE
+    ),
+    "Egg": Food("Egg", FoodType.MEAT, [Player], [Effect.HEAL], RarityType.COMMON),
+    "Milk": Food(
+        "Milk", FoodType.DAIRY, [Player, Animal], [Effect.STAMINA], RarityType.COMMON
+    ),
+    "Cheese": Food(
+        "Cheese", FoodType.DAIRY, [Player], [Effect.HEAL], RarityType.UNCOMMON
+    ),
+    "Tomato": Food(
+        "Tomato", FoodType.VEGETABLE, [Player], [Effect.HEAL], RarityType.COMMON
+    ),
+    "Potato": Food(
+        "Potato", FoodType.VEGETABLE, [Player], [Effect.STAMINA], RarityType.COMMON
+    ),
+    "Carrot": Food(
+        "Carrot",
+        FoodType.VEGETABLE,
+        [Player, Animal],
+        [Effect.HEAL],
+        RarityType.COMMON,
+    ),
     "Golden Apple": Food(
         "Golden Apple",
         FoodType.FRUIT,
+        [Player],
         [Effect.HEAL, Effect.STAMINA],
         RarityType.LEGEND,
     ),
-    "Apple": Food("Apple", FoodType.FRUIT, [Effect.HEAL], RarityType.COMMON),
-}
-list_player_medicine = {
-    "Flu Medicine": Medicine(
-        "Flu Medicine",
-        10,
-        TypeDisease.FLU,
-        Player,
-        [list_herb["Ginger"], list_herb["Turmeric"]],
-    ),
-    "Fever Medicine": Medicine(
-        "Fever Medicine",
-        4,
-        TypeDisease.FEVER,
-        Player,
-        [list_herb["Ginger"], list_food["Garlic"]],
-    ),
-    "Virus Medicine": Medicine(
-        "Virus Medicine",
-        20,
-        TypeDisease.VIRUS,
-        Player,
-        [list_herb["Ginger"], list_herb["Cinnamon"], list_herb["Pandan"]],
-    ),
-    "Cough Medicine": Medicine(
-        "Cough Medicine",
-        6,
-        TypeDisease.COUGH,
-        Player,
-        [list_herb["Lemongrass"], list_herb["Mint"]],
-    ),
-    "Stomach Medicine": Medicine(
-        "Stomach Medicine",
-        8,
-        TypeDisease.STOMACH_ACHE,
-        Player,
-        [list_herb["Galangal"], list_herb["Turmeric"]],
+    "Apple": Food(
+        "Apple", FoodType.FRUIT, [Player, Animal], [Effect.HEAL], RarityType.COMMON
     ),
 }
-
-list_meal = [
-    Food(
+list_meal = {
+    "Fried Rice": Food(
         "Fried Rice",
         FoodType.MEAL,
+        [Player],
         recipe=[list_food["Rice"], list_food["Red Onion"], list_food["Garlic"]],
     ),
-    Food(
+    "Chicken Soup": Food(
         "Chicken Soup",
         FoodType.MEAL,
+        [Player],
         recipe=[list_food["Chicken"], list_herb["Lemongrass"], list_herb["Galangal"]],
     ),
-    Food(
+    "Beef Stew": Food(
         "Beef Stew",
         FoodType.MEAL,
+        [Player],
         recipe=[list_food["Beef"], list_food["Potato"], list_food["Carrot"]],
     ),
-    Food(
+    "Ginger Tea": Food(
         "Ginger Tea",
         FoodType.MEAL,
+        [Player],
         recipe=[list_herb["Ginger"], list_herb["Lemongrass"]],
     ),
-]
+}

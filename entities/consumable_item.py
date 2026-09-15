@@ -17,7 +17,8 @@ import math
 
 
 class Consumable(Item):
-    def __init__(self, name, rarity):
+    def __init__(self, name, rarity, target: list[Player | Animal]):
+        self.target_entities = target
         super().__init__(name, ItemType.CONSUMABLE, rarity)
 
 
@@ -28,6 +29,7 @@ class Food(Consumable):
         self,
         name,
         food_type,
+        target,
         effect: list[Effect] = [],
         rarity=RarityType.COMMON,
         recipe: list[Food] = [],
@@ -55,7 +57,7 @@ class Food(Consumable):
             self.effect = deepcopy(temp_effect)
             temp_effect.clear()
 
-        super().__init__(name, rarity)
+        super().__init__(name, rarity, target)
 
     def __str__(self):
         if isinstance(self.effect, dict):
@@ -78,19 +80,12 @@ class Medicine(Consumable):
         self,
         name,
         amount_health,
+        target,
         type_disease: TypeDisease,
-        target_class: type[Player | Animal],
         recipe: list[Food],
     ):
         self.type_disease = type_disease
         self.amount_health = amount_health
-        self.target_class = target_class
         self.recipe = recipe
         rarity = max((rcp.rarity for rcp in self.recipe), key=lambda r: r.value)
-        super().__init__(name, rarity)
-
-
-class Seed(Consumable):
-    def __init__(self, name, rarity, corp_type: Corp):
-        super().__init__(name, rarity)
-        self.corp_type = corp_type
+        super().__init__(name, rarity, target)
