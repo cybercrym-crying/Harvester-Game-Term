@@ -17,11 +17,14 @@ class Character(ABC):
 
 
 class Player(Character):
+    total_player = 0
+
     def __init__(self, name, gender, bornDate):
         super().__init__(name, gender, bornDate=date.today())
-        self.gold = 100
-        self.stamina = 30
-        self.health = 50
+        Player.total_player += 1
+        self.__gold = 100
+        self.__stamina = 30
+        self.__health = 50
         self.type_disease = None
         self.inventory = InventorySystem()
 
@@ -29,9 +32,9 @@ class Player(Character):
         return (
             f"Name:   \t{self.name}\n"
             f"Gender: \t{self.gender}\n"
-            f"Gold:   \t{self.gold}\n"
-            f"Stamina:\t{self.stamina}\n"
-            f"Health: \t{self.health}\n"
+            f"Gold:   \t{self.__gold}\n"
+            f"Stamina:\t{self.__stamina}\n"
+            f"Health: \t{self.__health}\n"
             f"Disease \t{self.type_disease}\n"
         )
 
@@ -45,35 +48,40 @@ class Player(Character):
         if isinstance(consumable, Food):
             for k, v in consumable.effect.items():
                 if k == Effect.HEAL:
-                    self.add_health(v)
+                    self.health += v
                 else:
-                    self.add_stamina(v)
+                    self.stamina += v
         elif isinstance(consumable, Medicine):
             pass
 
-    def add_health(self, amount):
-        if self.health + amount >= 100:
-            self.health = 100
-        else:
-            self.health += amount
+    @property
+    def health(self):
+        return self.__health
 
-    def sub_health(self, amount):
-        if self.health - amount <= 0:
-            self.health = 0
-        else:
-            self.health -= amount
+    @health.setter
+    def health(self, value):
+        if not isinstance(value, (int, float)):
+            print("Health must be integer")
+            return
+        self.__health = max(0, min(value, 100))
 
-    def add_stamina(self, amount):
-        if self.stamina + amount >= 50:
-            self.stamina = 50
-        else:
-            self.stamina += amount
+    @property
+    def stamina(self):
+        return self.__stamina
 
-    def sub_stamina(self, amount):
-        if self.stamina - amount <= 0:
-            self.stamina = 0
-        else:
-            self.stamina -= amount
+    @stamina.setter
+    def stamina(self, value):
+        if not isinstance(value, (int, float)):
+            print("Stamine must be integer")
+            return
+        self.__stamina = max(0, min(value, 100))
+
+    @staticmethod
+    def is_valid_name(name: str) -> bool:
+        # helper validasi nama, gak butuh self/cls karena murni ngecek teks
+        return (
+            isinstance(name, str) and name.strip() != "" and not name.strip().isdigit()
+        )
 
     @staticmethod
     def create_player():

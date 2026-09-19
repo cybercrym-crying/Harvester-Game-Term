@@ -6,9 +6,16 @@ import climage
 import subprocess
 import time
 from art import art, tprint
+from entities.animal_wo import Cow
 
 
 def menu():
+    """
+    tprint("HARVESTER", font="block")
+    time.sleep(5)
+    wait_for_upscale_term()
+    game_loading()
+    """
     m = f"Hellooo Player, Welcome to Harvester"
     confirm = inquirer.select(
         message=m,
@@ -20,14 +27,15 @@ def menu():
         exit(0)
 
 
+data_sapi = {
+    "name": "Moli",
+    "gender": "Female",
+    "health": 80,
+}  # anggap sebagai data dari file
+sapi_baru = Cow.from_dict(data_sapi)
 my_player = menu()
-tprint("HARVESTER", font="block")
-time.sleep(5)
-wait_for_upscale_term()
-game_loading()
+print(my_player)
 print(list_food["Rice"])
-print(my_player)
+print(sapi_baru)
 if my_player:
-    my_player.eat(list_food["Rice"])
-    my_player.eat(list_herb["Pandan"])
-print(my_player)
+    pass

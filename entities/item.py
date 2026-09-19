@@ -1,3 +1,4 @@
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from enum import Enum, auto
 from datetime import date
@@ -71,6 +72,15 @@ class ItemStack:
 
     @quantity.setter
     def quantity(self, amount):
+        if not isinstance(amount, int):
+            print("Quantity must be integer")
+            return
+        if amount < 0:
+            print("Quantity cannot Negative")
+            return
+        if amount > self.item.max_stack:
+            print(f"Quantity reach max stack: ({self.item.max_stack})!")
+            return amount
         self.__quantity = amount
 
 

@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .item import Item
 from .character import Player
 from .animal_wo import Animal

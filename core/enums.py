@@ -16,6 +16,7 @@ class TypeDisease(Enum):
     VIRUS = auto()
     COUGH = auto()
     STOMACH_ACHE = auto()
+    NONE = auto()
 
 
 class ItemCondition(Enum):

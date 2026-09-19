@@ -9,23 +9,21 @@ import subprocess
 
 
 class Animal(WorldObject, ABC):
-    __sickProb = 4
-    _next_y = 2  # class attribute, shared antar semua instance
+    __sickProb = 4  # base persen chance kena sakit
+    _next_y = 2  # class attribute, shared antar semua instance untuk posisi gambar
+    total_animal = 0  # jumlah total hewan yang hidup
 
     def __init__(self, name, gender, prefix):
         super().__init__(name, prefix)
-        self.status = {
-            "Hungry Status": AnimalStatus.NOTHUNGRY.name,
-            "Sick Status": {
-                "Condition": AnimalStatus.HEALTHY.name,
-                "TypeDisease": TypeDisease.NONE.name,
-            },
-            "Harvest Status": AnimalStatus.NOTREADY.name,
-            "Love Status": {"Condition": False, "Cooldown": 0},
-            "Health": 100,  # max health 100
-            "Relationship": 0,  # max Relationship 100
-            "Stress": 0,  # max stress 10
-        }
+        Animal.total_animal += 1
+        self.__health = 100
+        self.__stress = 0
+        self.__relationship = 0
+        self.__hungry_status = AnimalStatus.NOTHUNGRY.name
+        self.__sick_condition = AnimalStatus.HEALTHY.name
+        self.__sick_disease = TypeDisease.NONE.name
+        self.__harvest_status = AnimalStatus.NOTREADY.name
+        self.__love = False
         self.dateLastMeal = date.today()
         self.gender = gender
         if gender == "Female":
@@ -34,117 +32,163 @@ class Animal(WorldObject, ABC):
             self.pregnant = "N\\A"
 
     def __str__(self):
-        pregnant_info = (
-            f"Pregnant: {self.pregnant}\n" if self.gender == "Female" else ""
-        )
-
         return (
             f"Name: {self.name}\n"
             f"Is Alive: {self.is_alive}\n"
             f"Id: {self.idWO}\n"
-            f"Health: {self.health}\n"
+            f"Health: {self.__health}\n"
             f"Date Last Meal: {self.dateLastMeal}\n"
-            f"Hungry: {self.status['Hungry Status']}\n"
-            f"Harvest: {self.status['Harvest Status']}\n"
-            f"Sick: {self.status['Sick Status']}\n"
-            f"Stress: {self.status['Stress']}\n"
-            f"Relationship: {self.status['Relationship']}\n"
-            f"Love: {self.status['Love Status']['Condition']}\n"
+            f"Hungry: {self.__hungry_status}\n"
+            f"Harvest: {self.__harvest_status}\n"
+            f"Sick: {self.__sick_condition} ({self.__sick_disease})\n"
+            f"Stress: {self.__stress}\n"
+            f"Relationship: {self.__relationship}\n"
+            f"Love: {self.__love}\n"
             f"Pregnant: {self.pregnant}".strip()
         )
 
+    @classmethod
+    def from_dict(cls, data: dict):
+        animal = cls(data["name"], data["gender"])  # type: ignore[call-arg]
+        animal.health = data.get("health", 100)
+        animal.stress = data.get("stress", 0)
+        animal.love = data.get("love", False)
+        return animal
+
     @property
     def love(self):
-        return self.status["Love Status"]["Condition"]
+        return self.__love
 
     @love.setter
-    def love(self):
+    def love(self, value):
+        # cuma bisa jadi True kalau syaratnya lengkap, selain itu tetap False
         if (
             self.age_in_days.days >= 365
-            and self.status["Sick Status"]["Condition"] == AnimalStatus.HEALTHY.name
-            and self.status["Hungry Status"] == AnimalStatus.NOTHUNGRY.name
-            and self.status["Stress"] <= 5
+            and self.__sick_condition == AnimalStatus.HEALTHY.name
+            and self.__hungry_status == AnimalStatus.NOTHUNGRY.name
+            and self.__stress <= 5
         ):
-            self.status["Love Status"]["Condition"] = True
+            self.__love = value
         else:
-            pass
+            self.__love = False
 
     @property
     def health(self):
-        return self.status["Health"]
+        return self.__health
 
     @health.setter
-    def health(self):
-        if self.status[
-            "Hungry Status"
-        ] == AnimalStatus.HUNGRY.name and self.dateLastMeal == (
-            date.today()
-        ) - timedelta(
-            days=2
-        ):
-            self.health -= 2
-            if self.health <= 0:
-                self.is_alive = False
-        else:
-            self.health += 2
+    def health(self, value):
+        if not isinstance(value, (int, float)):
+            print("Health harus berupa angka!")
+            return
+        self.__health = max(0, min(100, value))
+        if self.__health <= 0:
+            self.is_alive = False
+            Animal.total_animal -= 1
 
     @property
     def stress(self):
-        return self.stress
+        return self.__stress
 
     @stress.setter
-    def stress(self):
-        self.stress += 1
+    def stress(self, value):
+        if value < 0:
+            print("Stress tidak boleh negatif!")
+            return
+        self.__stress = min(10, value)
 
     @property
     def sick(self):
-        return self.status["Sick Status"]
+        return {"Condition": self.__sick_condition, "TypeDisease": self.__sick_disease}
 
     @sick.setter
-    def get_sick(self):
-        if (
-            self.status["Hungry Status"] == AnimalStatus.HUNGRY.name
-        ):  # Probability animal get sick increase if the animal hungry
-            self.__sickProb += 10
-        else:
-            self.__sickProb = 10
-        if random.random() < self.__sickProb:
-            self.status["Sick Status"]["Condition"] = AnimalStatus.SICK.name
-            self.status["Sick Status"]["TypeDisease"] = random.choice(list(TypeDisease))
+    def sick(self, value):
+        if value not in (AnimalStatus.HEALTHY.name, AnimalStatus.SICK.name):
+            print("Status sick tidak valid!")
+            return
+        self.__sick_condition = value
+
+    @classmethod
+    def get_total_animal(cls):
+        return cls.total_animal
 
     @abstractmethod
     def check_accepted_consumption(self, consumption) -> bool:
         pass
 
+    @staticmethod
+    def show_animal(list_animal: list):
+        i = 0
+        while i < len(list_animal):
+            list_animal[i].get_info()
+            confirm = None
+            if (i + 1) % 3 == 0 or i + 1 == len(list_animal):
+                if i + 1 <= 3:
+                    confirm = inquirer.select(
+                        message="Continue?",
+                        choices=["Next", "Quit"],
+                    ).execute()
+                elif i + 1 > 3:
+                    confirm = inquirer.select(
+                        message="Continue?",
+                        choices=["Prev", "Next", "Quit"],
+                    ).execute()
+                if confirm == "Quit":
+                    return
+                elif confirm == "Next":
+                    clear_screen()
+                    Animal._next_y = 2
+                    i += 1
+                    continue
+                else:
+                    clear_screen()
+                    Animal._next_y = 2
+                    i -= 3
+                    continue
+            i += 1
+
+    def update_health_by_hunger(self):
+        if self.__hungry_status == AnimalStatus.HUNGRY.name and self.dateLastMeal == (
+            date.today() - timedelta(days=2)
+        ):
+            self.health -= 2
+        else:
+            self.health += 2
+
+    def get_sick(self):
+        # Probability animal get sick increase if the animal hungry
+        if self.__hungry_status == AnimalStatus.HUNGRY.name:
+            chance = Animal.__sickProb + 10
+        else:
+            chance = Animal.__sickProb
+        if random.random() * 100 < chance:
+            self.sick = AnimalStatus.SICK.name
+            self.__sick_disease = random.choice(list(TypeDisease)).name
+
     def cure_sick(self, consumption):
-        if self.status["Sick Status"]["Condition"] == AnimalStatus.SICK.name:
+        if self.__sick_condition == AnimalStatus.SICK.name:
             if (
                 self.check_accepted_consumption(consumption)
-                and f"{self.status['Sick Status']['TypeDisease'].lower()}"
-                in consumption.lower()
+                and self.__sick_disease.lower() in consumption.lower()
             ):
-                self.status["Sick Status"]["Condition"] = AnimalStatus.HEALTHY.name
-                self.status["Sick Status"]["TypeDisease"] = None
-        else:
-            pass
+                self.sick = AnimalStatus.HEALTHY.name
+                self.__sick_disease = TypeDisease.NONE.name
 
     def eating(self, consumption):
-        if self.status["Hungry Status"] == AnimalStatus.HUNGRY.name:
+        if self.__hungry_status == AnimalStatus.HUNGRY.name:
             if self.check_accepted_consumption(consumption):
-                self.status["Hungry Status"] = AnimalStatus.NOTHUNGRY.name
+                self.__hungry_status = AnimalStatus.NOTHUNGRY.name
                 self.dateLastMeal = date.today()
             else:
                 print(f"Sorry this meal not for your animal")
-        else:
-            pass
 
     def incress_stress(self):
         if (
-            self.status["Harvest Status"] == AnimalStatus.READY.name
-            or self.status["Hungry Status"] == AnimalStatus.HUNGRY.name
-            or self.status["Sick Status"]["Condition"] == AnimalStatus.SICK.name
+            self.__harvest_status == AnimalStatus.READY.name
+            or self.__hungry_status == AnimalStatus.HUNGRY.name
+            or self.__sick_condition == AnimalStatus.SICK.name
         ):
-            self.stres += 1
+            self.stress += 1
 
     def get_info_image(self, path, info, img_cols=20, img_rows=10, x=0, y=0):
         subprocess.run(
@@ -241,35 +285,3 @@ class Chicken(Animal):
                 y=Animal._next_y,
             )
         Animal._next_y += img_rows + 2
-
-
-def show_animal(list_animal: list):
-
-    i = 0
-    while i < len(list_animal):
-        list_animal[i].get_info()
-        confirm = None
-        if (i + 1) % 3 == 0 or i + 1 == len(list_animal):
-            if i + 1 <= 3:
-                confirm = inquirer.select(
-                    message="Continue?",
-                    choices=["Next", "Quit"],
-                ).execute()
-            elif i + 1 > 3:
-                confirm = inquirer.select(
-                    message="Continue?",
-                    choices=["Prev", "Next", "Quit"],
-                ).execute()
-            if confirm == "Quit":
-                return
-            elif confirm == "Next":
-                clear_screen()
-                Animal._next_y = 2
-                i += 1
-                continue
-            else:
-                clear_screen()
-                Animal._next_y = 2
-                i -= 3
-                continue
-        i += 1
